@@ -8,7 +8,7 @@
 	<Description> View SAM file</Description>
 	<Target/>
 	<Rule RuleId="urn:oasis:names:tc:xacml:3.0:ejemplo:RuleSAM" Effect="Permit">
-		<Description>A premium user is able to view a SAM file given in SAMfilesfolder </Description>
+		<Description>A premium user is able to View a SAM file given in SAMfilesfolder </Description>
 		<Target>
 			<AnyOf>
 				<AllOf>
@@ -31,7 +31,7 @@
 					
 					<!-- Which action  -->
 					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">view</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">View</AttributeValue>
 						<AttributeDesignator MustBePresent="false"
 							Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
 							AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"

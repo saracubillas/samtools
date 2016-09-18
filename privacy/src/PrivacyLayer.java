@@ -30,12 +30,13 @@ public class PrivacyLayer {
         }
 
         String config_path = "config/config_rbac.xml";
-        String policy_path = "examples/policy";
-/*
         String request_path = args[0];
-        String sam_file = args[1]; */
+        String policy_path = args[1];
 
-        String request_path = "examples/request/XACMLRequest5.xml";
+
+      /*  String policy_path = "examples/policy";*/
+        /*String request_path = "examples/request/XACMLRequest5.xml";*/
+
         String sam_file = "toy.sam";
 
         initBalana(config_path, policy_path);
@@ -70,7 +71,7 @@ public class PrivacyLayer {
 
     static public void viewSAM(String args) {
         PrivacyLayer obj = new PrivacyLayer();
-        String command = "samtools view -bS /Users/sara/Documents/MIRI/thesis/samtools-1.3.1/examples/toy.sam";
+        String command = "samtools View -bS /Users/sara/Documents/MIRI/thesis/samtools-1.3.1/examples/toy.sam";
         String output = obj.executeCommand(command);
         System.out.println(output);
         System.out.println("\n========OUTPUT======");
