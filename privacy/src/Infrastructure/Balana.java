@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 public class Balana {
 
     private static org.wso2.balana.Balana balana;
-    private static String config_path = "/Users/sara/Documents/MIRI/thesis/FORKsamtools/samtools/privacy/config/config_rbac.xml";
+    private static String config_path = "../../../config/config_rbac.xml";
 
 
     public static void evaluateRequest(String request_path, String policy_path) {
