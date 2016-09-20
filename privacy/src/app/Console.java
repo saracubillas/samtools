@@ -20,14 +20,13 @@ public class Console {
         String policy_path = args[1];
 
 
-
-
         String decision = evaluateRequest(request_path, policy_path);
         if (decision.equals("Permit")){
             System.out.println("\n=== OK");
         } else {
             System.out.println("Permision denied");
         }
+        String resource = XACMLparser.getResource(request_path);
         //pillar el sam file de la request
         //pillar la accion de la request
    /*     String resource = XACMLparser.getResource(request_path);

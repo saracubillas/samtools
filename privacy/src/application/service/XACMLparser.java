@@ -3,10 +3,14 @@ package application.service;
 
 import app.Domain.XACMLrequest;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,10 +22,6 @@ public class XACMLparser {
         Document doc = readXML(response);
         return doc.getElementsByTagName("Decision").item(0).getTextContent();
     }
-
-   /* public XACMLrequest getRequestParameters() {
-
-    }*/
 
     private static Document readXML(String response) {
         try {
@@ -41,10 +41,30 @@ public class XACMLparser {
         return builder.parse(is);
     }
 
-  /*  public static String getResource(String request_path) {
-        byte[] encoded = Files.readAllBytes(Paths.get(request_path));
-        String request = new String(encoded, StandardCharsets.UTF_8);
-        Document doc = readXML(request);
-        return doc.getElementsByTagName("Decision").item(0).getTextContent();
-    }*/
+    public static String getResource(String request_path) {
+        try {
+
+            File fXmlFile = new File(request_path);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(fXmlFile);
+            doc.getDocumentElement().normalize();
+            NodeList nList = doc.getElementsByTagName("Attributes");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    if (eElement.hasAttribute("Category") &&
+                            eElement.getAttribute("Category").equals("urn:oasis:names:tc:xacml:3.0:attribute-category:resource")) {
+                        String resource = eElement.getElementsByTagName("Attribute").item(0).getTextContent();
+                        System.out.println(resource);
+                        return resource;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
