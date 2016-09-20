@@ -2,6 +2,7 @@ package app;
 
 import Infrastructure.Balana;
 import application.service.Command;
+import application.service.CommandFactory;
 import application.service.ViewSAM;
 import application.service.XACMLparser;
 
@@ -28,12 +29,14 @@ public class Console {
         }
         String resource = XACMLparser.getResource(request_path);
         //pillar la accion de la request
-        Command action = new ViewSAM();//cambiar por la accion que sea
+        String actionType = "VIEW";
+        
+        CommandFactory commandFactory = new CommandFactory();
+        Command action = commandFactory.getCommand(actionType);
         executeAction(action);
     }
 
     private static String evaluateRequest(String request_path, String policy_path) {
-
         Balana balana = new Balana();
         String response = balana.evaluateRequest(request_path, policy_path);
         return XACMLparser.getDecision(response);
