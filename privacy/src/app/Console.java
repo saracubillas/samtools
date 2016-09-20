@@ -27,11 +27,9 @@ public class Console {
             System.out.println("Permision denied");
         }
         String resource = XACMLparser.getResource(request_path);
-        //pillar el sam file de la request
         //pillar la accion de la request
-   /*     String resource = XACMLparser.getResource(request_path);
         Command action = new ViewSAM();//cambiar por la accion que sea
-        executeAction(action);*/
+        executeAction(action);
     }
 
     private static String evaluateRequest(String request_path, String policy_path) {
