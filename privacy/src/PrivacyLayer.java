@@ -1,3 +1,4 @@
+/*
 import org.w3c.dom.Document;
 import org.wso2.balana.Balana;
 import org.wso2.balana.ConfigurationStore;
@@ -26,16 +27,13 @@ public class PrivacyLayer {
 
         if (args.length < 2) {
             System.out.println("Usage: <request_XACML> <policy_path>");
-           /* System.exit(1);*/
+            System.exit(1);
         }
 
         String config_path = "config/config_rbac.xml";
         String request_path = args[0];
         String policy_path = args[1];
 
-
-      /*  String policy_path = "examples/policy";*/
-        /*String request_path = "examples/request/XACMLRequest5.xml";*/
 
         String sam_file = "toy.sam";
 
@@ -123,7 +121,8 @@ public class PrivacyLayer {
     }
 
 
-    private static String readXML(String response) {
+   */
+/* private static String readXML(String response) {
         String decision = "";
         try {
 
@@ -144,8 +143,10 @@ public class PrivacyLayer {
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
         return builder.parse(is);
-    }
+    }*//*
+
 
 
 }
 
+*/

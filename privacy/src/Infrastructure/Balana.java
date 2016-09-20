@@ -16,7 +16,7 @@ public class Balana {
     private static String config_path = "../../../config/config_rbac.xml";
 
 
-    public static void evaluateRequest(String request_path, String policy_path) {
+    public static String evaluateRequest(String request_path, String policy_path) {
 
         initBalana(config_path, policy_path);
 
@@ -36,6 +36,7 @@ public class Balana {
             System.out.println("===========================================================");
 
 
+            return response;
            /* if (readXML(response).equals("Permit")){
                 System.out.println("\n=== OK");
                 viewSAM(sam_file);
@@ -48,7 +49,7 @@ public class Balana {
             System.out.println("Error: " + e.toString());
 
         }
-
+        return "";
     }
 
     private static void initBalana(String config_path, String policy_path) {
