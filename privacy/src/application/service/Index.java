@@ -1,6 +1,6 @@
 package application.service;
 
-public class Index implements Command {
+public class Index extends Command {
 
     @Override
     public void execute() {
