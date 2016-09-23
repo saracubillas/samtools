@@ -29,9 +29,10 @@ public class Console {
         }
         String resource = XACMLparser.getResource(request_path);
         //pillar la accion de la request
+        //pasarle el resource
         String actionType = "VIEW";
-        
-        CommandFactory commandFactory = new CommandFactory();
+
+        CommandFactory commandFactory = new CommandFactory();//inyectar esta dependencia
         Command action = commandFactory.getCommand(actionType);
         executeAction(action);
     }
@@ -44,7 +45,6 @@ public class Console {
 
     private static void executeAction(Command action) {
         action.execute();
-        /* viewSAM(sam_file);*/
     }
 
 
