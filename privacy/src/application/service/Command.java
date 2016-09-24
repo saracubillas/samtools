@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public abstract class Command {
-    public abstract void execute();
+    public abstract void execute(String file);
 
     public String executeCommand(String command) {
 

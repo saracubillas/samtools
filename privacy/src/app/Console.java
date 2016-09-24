@@ -3,7 +3,6 @@ package app;
 import Infrastructure.Balana;
 import application.service.Command;
 import application.service.CommandFactory;
-import application.service.ViewSAM;
 import application.service.XACMLparser;
 
 public class Console {
@@ -33,12 +32,11 @@ public class Console {
     private static void executeAction(String request_path) {
         String resource = XACMLparser.getResource(request_path);
         //pillar la accion de la request
-        //pasarle el resource
         String actionType = "VIEW";
 
         CommandFactory commandFactory = new CommandFactory();//inyectar esta dependencia
         Command action = commandFactory.getCommand(actionType);
-        executeAction(action);
+        executeAction(action, resource);
     }
 
     private static String evaluateRequest(String request_path, String policy_path) {
@@ -47,8 +45,8 @@ public class Console {
         return XACMLparser.getDecision(response);
     }
 
-    private static void executeAction(Command action) {
-        action.execute();
+    private static void executeAction(Command action, String resource) {
+        action.execute(resource);
     }
 
 
