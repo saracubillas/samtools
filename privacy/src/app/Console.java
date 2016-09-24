@@ -24,9 +24,13 @@ public class Console {
         String decision = evaluateRequest(request_path, policy_path);
         if (decision.equals("Permit")){
             System.out.println("\n=== OK");
+            executeAction(request_path);
         } else {
             System.out.println("Permision denied");
         }
+    }
+
+    private static void executeAction(String request_path) {
         String resource = XACMLparser.getResource(request_path);
         //pillar la accion de la request
         //pasarle el resource
