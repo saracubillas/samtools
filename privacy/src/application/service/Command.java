@@ -25,13 +25,11 @@ public abstract class Command {
 
             String line = "";
             while ((line = reader.readLine())!= null) {
-                System.out.println("\n========while======");
                 output.append(line).append("\n");
             }
 
             String lineError = "";
             while ((lineError = errorReader.readLine())!= null) {
-                System.out.println("\n========error======");
                 output.append(lineError).append("\n");
             }
 
