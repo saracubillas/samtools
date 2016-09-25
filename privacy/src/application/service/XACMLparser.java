@@ -57,8 +57,9 @@ public class XACMLparser {
                     if (eElement.hasAttribute("Category") &&
                             eElement.getAttribute("Category").equals("urn:oasis:names:tc:xacml:3.0:attribute-category:resource")) {
                         String resource = eElement.getElementsByTagName("Attribute").item(0).getTextContent();
-                        System.out.println(resource);
-                        return resource;
+                        String resourceNointro = resource.replace("\n", "").replace("\r", "");
+                        String resourceClean = resourceNointro.replaceAll("\\s","");
+                        return resourceClean;
                     }
                 }
             }

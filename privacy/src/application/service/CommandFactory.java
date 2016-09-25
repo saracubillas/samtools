@@ -12,6 +12,8 @@ public class CommandFactory {
             } else if(commandType.equalsIgnoreCase("INDEX")){
                 return new Index();
 
+            } else if(commandType.equalsIgnoreCase("VIEWCHROMOSOME")){
+                return new ViewChromosome();
             } else if(commandType.equalsIgnoreCase("SORT")){
                 return new Sort();
             }
