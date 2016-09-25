@@ -13,12 +13,11 @@ import java.nio.file.Paths;
 public class Balana {
 
     private static org.wso2.balana.Balana balana;
-    private static String config_path = "../../../config/config_rbac.xml";
 
 
-    public static String evaluateRequest(String request_path, String policy_path) {
+    public static String evaluateRequest(String request_path, String policy_path, String config_file) {
 
-        initBalana(config_path, policy_path);
+        initBalana(config_file, policy_path);
 
 
         try {
