@@ -32,10 +32,10 @@ public class Console {
     private static void executeAction(String request_path) {
         String resource = XACMLparser.getResource(request_path);
         //pillar la accion de la request
-        String actionType = "VIEW";
-/*
+        /*String actionType = "VIEW";*/
+
         String actionType = "VIEWCHROMOSOME";
-*/
+
 
         CommandFactory commandFactory = new CommandFactory();//inyectar esta dependencia
         Command action = commandFactory.getCommand(actionType);
