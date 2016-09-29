@@ -6,15 +6,20 @@
 	Version="1.0">
 
 	<Description> Policy rules sample</Description>
+	<PolicyDefaults>
+		<XPathVersion>http://www.w3.org/TR/1999/REC-xpath-19991116</XPathVersion>
+	</PolicyDefaults>
 	<Target/>
 	<Rule RuleId="urn:oasis:names:tc:xacml:3.0:ejemplo:RuleSAM" Effect="Permit">
-		<Description>A premium user is able to View a SAM file given</Description>
+		<Description> A physician may view the genomic information file
+            for which he or she is the designated primary care
+            physician, provided an email is sent to the patient</Description>
 		<Target>
 			<AnyOf>
 				<AllOf>
-					<!-- Which kind of user: Premium -->
+					<!-- Which kind of user: physician -->
 					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">premium</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">physician</AttributeValue>
 						<AttributeDesignator MustBePresent="false"
 							Category="urn:oasis:names:tc:xacml:3.0:role" AttributeId="role"
 							DataType="http://www.w3.org/2001/XMLSchema#string"/>
@@ -22,7 +27,7 @@
 					
 					<!-- Which resource -->
 					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
-						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">/Users/sara/Documents/MIRI/thesis/samtools-1.3.1/examples/toy.sam</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">examples/toy.sam</AttributeValue>
 						<AttributeDesignator MustBePresent="false"
 							Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
 							AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
@@ -57,13 +62,15 @@
 		</Condition>
 	</Rule>
 	<Rule RuleId="urn:oasis:names:tc:xacml:3.0:ejemplo:RuleSAMChromosome" Effect="Permit">
-		<Description>A premium user is able to extract reads for a given chromosome in a given sam file </Description>
+		<Description>A researcher may view chromosome 20 of a genomic information
+            file if he is the responsible of the study,
+            provided an email is sent to the data sharer </Description>
 		<Target>
 			<AnyOf>
 				<AllOf>
-					<!-- Which kind of user: Premium -->
+					<!-- Which kind of user: researcher -->
 					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">premium</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">researcher</AttributeValue>
 						<AttributeDesignator MustBePresent="false"
 											 Category="urn:oasis:names:tc:xacml:3.0:role" AttributeId="role"
 											 DataType="http://www.w3.org/2001/XMLSchema#string"/>
@@ -71,7 +78,7 @@
 
 					<!-- Which resource -->
 					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
-						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Users/sara/Documents/MIRI/thesis/samtools-1.3.1/examples/toy.sam#ref2</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">examples/toy.sam#ref2</AttributeValue>
 						<AttributeDesignator MustBePresent="false"
 											 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
 											 AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
@@ -106,5 +113,30 @@
 		</Condition>
 	</Rule>
 	<Rule RuleId="urn:oasis:names:tc:xacml:3.0:lab6:FinalRule" Effect="Deny"/>
-		
+	<ObligationExpressions>
+		<ObligationExpression ObligationId="urn:oasis:names:tc:xacml:example:obligation:email"
+							  FulfillOn="Permit">
+			<AttributeAssignmentExpression
+					AttributeId="urn:oasis:names:tc:xacml:3.0:example:attribute:mailto">
+				<AttributeSelector
+						MustBePresent="true"
+						Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+						Path="patient-email"
+						DataType="http://www.w3.org/2001/XMLSchema#string"/>
+			</AttributeAssignmentExpression>
+			<AttributeAssignmentExpression
+					AttributeId="urn:oasis:names:tc:xacml:3.0:example:attribute:text">
+				<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string"
+				>Your genomic information has been accessed by:</AttributeValue>
+			</AttributeAssignmentExpression>
+			<AttributeAssignmentExpression
+					AttributeId="urn:oasis:names:tc:xacml:3.0:example:attribute:text">
+				<AttributeDesignator
+						MustBePresent="false"
+						Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+						AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+						DataType="http://www.w3.org/2001/XMLSchema#string"/>
+			</AttributeAssignmentExpression>
+		</ObligationExpression>
+	</ObligationExpressions>
 </Policy>
