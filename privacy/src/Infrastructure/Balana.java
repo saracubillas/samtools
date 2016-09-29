@@ -17,11 +17,8 @@ public class Balana {
     private static org.wso2.balana.Balana balana;
 
 
-    public static String evaluateRequest(String request_path, String config_file) {
-
-        initBalana(config_file);
-
-
+    public static String evaluateRequest(String request_path) {
+        initBalana();
         try {
 
             byte[] encoded = Files.readAllBytes(Paths.get(request_path));
@@ -53,21 +50,23 @@ public class Balana {
         return "";
     }
 
-    private static void initBalana(String config_path) {
-
-
+    private static void initBalana() {
         // using file based policy repository. so set the policy location as system property
         String policyLocation = null;
+        String configPath = null;
         try {
             policyLocation = (new File(".")).getCanonicalPath() + File.separator + "policy";
-            System.out.println(policyLocation);
             System.setProperty(FileBasedPolicyFinderModule.POLICY_DIR_PROPERTY, policyLocation);
         } catch (IOException e) {
             System.err.println("Can not locate policy repository");
         }
 
-
-        System.setProperty(ConfigurationStore.PDP_CONFIG_PROPERTY, config_path);
+        try {
+            configPath = (new File(".")).getCanonicalPath() + File.separator + "config/config_rbac.xml";
+            System.setProperty(ConfigurationStore.PDP_CONFIG_PROPERTY, configPath);
+        } catch (IOException e) {
+            System.err.println("Can not locate configuration repository");
+        }
 
 
         balana = org.wso2.balana.Balana.getInstance();
