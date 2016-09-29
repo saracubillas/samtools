@@ -11,17 +11,17 @@ public class Console {
 
     public static void main(String[] args) {
 
-        if (args.length < 3) {
-            System.out.println("Usage: <request_XACML> <policy_path> <config_file> ");
+        if (args.length < 2) {
+            System.out.println("Usage: <request_XACML> <config_file> ");
             System.exit(1);
         }
 
         String request_path = args[0];
-        String policy_path = args[1];
-        String config_file = args[2];
+
+        String config_file = args[1];
 
 
-        String decision = evaluateRequest(request_path, policy_path, config_file);
+        String decision = evaluateRequest(request_path, config_file);
         if (decision.equals("Permit")){
             System.out.println("\n=== OK");
             executeAction(request_path);
@@ -39,9 +39,9 @@ public class Console {
         executeAction(action, resource);
     }
 
-    private static String evaluateRequest(String request_path, String policy_path, String config_file) {
+    private static String evaluateRequest(String request_path, String config_file) {
         Balana balana = new Balana();
-        String response = balana.evaluateRequest(request_path, policy_path, config_file);
+        String response = balana.evaluateRequest(request_path, config_file);
         return XACMLparser.getDecision(response);
     }
 

@@ -6,6 +6,8 @@ import org.wso2.balana.PDP;
 import org.wso2.balana.PDPConfig;
 import org.wso2.balana.finder.impl.FileBasedPolicyFinderModule;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,9 +17,9 @@ public class Balana {
     private static org.wso2.balana.Balana balana;
 
 
-    public static String evaluateRequest(String request_path, String policy_path, String config_file) {
+    public static String evaluateRequest(String request_path, String config_file) {
 
-        initBalana(config_file, policy_path);
+        initBalana(config_file);
 
 
         try {
@@ -51,11 +53,22 @@ public class Balana {
         return "";
     }
 
-    private static void initBalana(String config_path, String policy_path) {
+    private static void initBalana(String config_path) {
+
+
+        // using file based policy repository. so set the policy location as system property
+        String policyLocation = null;
+        try {
+            policyLocation = (new File(".")).getCanonicalPath() + File.separator + "policy";
+            System.out.println(policyLocation);
+            System.setProperty(FileBasedPolicyFinderModule.POLICY_DIR_PROPERTY, policyLocation);
+        } catch (IOException e) {
+            System.err.println("Can not locate policy repository");
+        }
+
 
         System.setProperty(ConfigurationStore.PDP_CONFIG_PROPERTY, config_path);
 
-        System.setProperty(FileBasedPolicyFinderModule.POLICY_DIR_PROPERTY, policy_path);
 
         balana = org.wso2.balana.Balana.getInstance();
     }
