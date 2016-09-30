@@ -20,12 +20,9 @@ public class Balana {
     public static String evaluateRequest(String request_path) {
         initBalana();
         try {
-
             byte[] encoded = Files.readAllBytes(Paths.get(request_path));
             String request = new String(encoded, StandardCharsets.UTF_8);
-
             PDP pdp = getPDPNewInstance();
-
             String response = pdp.evaluate(request);
 
 
@@ -33,16 +30,7 @@ public class Balana {
             System.out.println(response);
             System.out.println("===========================================================");
 
-
             return response;
-           /* if (readXML(response).equals("Permit")){
-                System.out.println("\n=== OK");
-                viewSAM(sam_file);
-
-            } else {
-                System.out.println("Permision denied");
-            }*/
-
         } catch (Exception e) {
             System.out.println("Error: " + e.toString());
 
