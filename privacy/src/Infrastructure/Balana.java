@@ -17,14 +17,11 @@ public class Balana {
     private static org.wso2.balana.Balana balana;
 
 
-    public static String evaluateRequest(String request_path) {
+    public static String evaluateRequest(String request) {
         initBalana();
         try {
-            byte[] encoded = Files.readAllBytes(Paths.get(request_path));
-            String request = new String(encoded, StandardCharsets.UTF_8);
             PDP pdp = getPDPNewInstance();
             String response = pdp.evaluate(request);
-
 
             System.out.println("\n======================== XACML Response ===================");
             System.out.println(response);

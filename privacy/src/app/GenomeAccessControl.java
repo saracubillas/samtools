@@ -1,5 +1,10 @@
 package app;
 
+import Infrastructure.Balana;
+import application.service.Command;
+import application.service.CommandFactory;
+import application.service.XACMLparser;
+
 import java.io.Console;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +25,8 @@ public class GenomeAccessControl {
         String role = null;
         String filePath = null;
         String chromosomeRef = null;
+        String resource = null;
+        String fileName = null;
 
         printDescription();
 
@@ -72,116 +79,52 @@ public class GenomeAccessControl {
         }
 
 
-       /* String request = createXACMLRequest(userName, role, actionName, chromosomeRef);
+        resource = filePath;
+
+        if (chromosomeRef != null) {
+            resource = resource + "#" + chromosomeRef;
+        }
+
+        if (resource != null) {
+            fileName = resource.substring(resource.lastIndexOf('/')+1, resource.length());
+        }
+        String request = createXACMLRequest(userName, role, actionName, fileName);
         //String request = createXACMLRequest("JohnDoe", "physician", "VIEW", 40);
-        PDP pdp = getPDPNewInstance();
 
         System.out.println("\n======================== XACML Request ====================");
         System.out.println(request);
         System.out.println("===========================================================");
 
-        String response = pdp.evaluate(request);
+        String decision = evaluateRequest(request);
 
-        System.out.println("\n======================== XACML Response ===================");
-        System.out.println(response);
-        System.out.println("===========================================================");
-
-        try {
-            ResponseCtx responseCtx = ResponseCtx.getInstance(getXacmlResponse(response));
-            AbstractResult result  = responseCtx.getResults().iterator().next();
-            if(AbstractResult.DECISION_PERMIT == result.getDecision()){
-                System.out.println("\n" + userName + " is authorized to perform this purchase\n\n");
-            } else {
-                System.out.println("\n" + userName + " is NOT authorized to perform this purchase\n");
-                List<Advice> advices = result.getAdvices();
-                for(Advice advice : advices){
-                    List<AttributeAssignment> assignments = advice.getAssignments();
-                    for(AttributeAssignment assignment : assignments){
-                        System.out.println("Advice :  " + assignment.getContent() +"\n\n");
-                    }
-                }
-            }
-        } catch (ParsingException e) {
-            e.printStackTrace();
+        if (decision.equals("Permit")){
+            System.out.println("\n" + userName + " is authorized to perform this action\n\n");
+            executeAction(resource, actionName);
+        } else {
+            System.out.println("\n" + userName + " is NOT authorized to perform this action\n");
         }
-*/
+
     }
+
+    private static String evaluateRequest(String request) {
+        Balana balana = new Balana();
+        String response = balana.evaluateRequest(request);
+        return XACMLparser.getDecision(response);
+    }
+
+
+    private static void executeAction(String resource, String actionType ) {
+        CommandFactory commandFactory = new CommandFactory();//inyectar esta dependencia
+        Command action = commandFactory.getCommand(actionType);
+        action.execute(resource);
+    }
+
     private static void initData(){
         idMap.put("1" , "VIEW");
         idMap.put("2" , "VIEWCHROMOSOME");
     }
 
-   /* private static void initBalana(){
 
-        try{
-            // using file based policy repository. so set the policy location as system property
-            String policyLocation = (new File(".")).getCanonicalPath() + File.separator + "resources";
-            System.setProperty(FileBasedPolicyFinderModule.POLICY_DIR_PROPERTY, policyLocation);
-        } catch (IOException e) {
-            System.err.println("Can not locate policy repository");
-        }
-        // create default instance of Balana
-        balana = Balana.getInstance();
-    }
-
-*
-     * Returns a new PDP instance with new XACML policies
-     *
-     * @return a  PDP instance
-
-
-    private static PDP getPDPNewInstance(){
-
-        PDPConfig pdpConfig = balana.getPdpConfig();
-
-        // registering new attribute finder. so default PDPConfig is needed to change
-        AttributeFinder attributeFinder = pdpConfig.getAttributeFinder();
-        List<AttributeFinderModule> finderModules = attributeFinder.getModules();
-        finderModules.add(new SampleAttributeFinderModule());
-        attributeFinder.setModules(finderModules);
-
-        return new PDP(new PDPConfig(attributeFinder, pdpConfig.getPolicyFinder(), null, true));
-    }
-
-    public static int calculateTotal(String productName, int amount){
-
-        String priceString = priceMap.get(productName);
-        return Integer.parseInt(priceString)*amount;
-
-    }
-
-*
-     * Creates DOM representation of the XACML request
-     *
-     * @param response  XACML request as a String object
-     * @return XACML request as a DOM element
-
-
-    public static Element getXacmlResponse(String response) {
-
-        ByteArrayInputStream inputStream;
-        DocumentBuilderFactory dbf;
-        Document doc;
-
-        inputStream = new ByteArrayInputStream(response.getBytes());
-        dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-
-        try {
-            doc = dbf.newDocumentBuilder().parse(inputStream);
-        } catch (Exception e) {
-            System.err.println("DOM of request element can not be created from String");
-            return null;
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                System.err.println("Error in closing input stream of XACML response");
-            }
-        }
-        return doc.getDocumentElement();
-    }
-*/
     public static void printDescription(){
 
         System.out.println("\n This is an application that have implemented some access " +
@@ -190,33 +133,46 @@ public class GenomeAccessControl {
 
     }
 
-    /*public static String createXACMLRequest(String userName,String role, String actionName, String chromosomeRef){
+    public static String createXACMLRequest(String userName,String role, String actionName, String resource){
 
-        return "<Request xmlns=\"urn:oasis:names:tc:xacml:3.0:core:schema:wd-17\" CombinedDecision=\"false\" ReturnPolicyIdList=\"false\">\n" +
-                "<Attributes Category=\"urn:oasis:names:tc:xacml:3.0:attribute-category:action\">\n" +
-                "<Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:action:action-id\" IncludeInResult=\"false\">\n" +
-                "<AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">buy</AttributeValue>\n" +
-                "</Attribute>\n" +
-                "</Attributes>\n" +
-                "<Attributes Category=\"urn:oasis:names:tc:xacml:1.0:subject-category:access-subject\">\n" +
-                "<Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:subject:subject-id\" IncludeInResult=\"false\">\n" +
-                "<AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">" + userName +"</AttributeValue>\n" +
-                "</Attribute>\n" +
-                "</Attributes>\n" +
-                "<Attributes Category=\"urn:oasis:names:tc:xacml:3.0:attribute-category:resource\">\n" +
-                "<Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:resource:resource-id\" IncludeInResult=\"false\">\n" +
-                "<AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">" + resource + "</AttributeValue>\n" +
-                "</Attribute>\n" +
-                "</Attributes>\n" +
-                "<Attributes Category=\"http://kmarket.com/category\">\n" +
-                "<Attribute AttributeId=\"http://kmarket.com/id/amount\" IncludeInResult=\"false\">\n" +
-                "<AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#integer\">" + amount + "</AttributeValue>\n" +
-                "</Attribute>\n" +
-                "<Attribute AttributeId=\"http://kmarket.com/id/totalAmount\" IncludeInResult=\"false\">\n" +
-                "<AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#integer\">" + totalAmount + "</AttributeValue>\n" +
-                "</Attribute>\n" +
-                "</Attributes>\n" +
-                "</Request>";
 
-    }*/
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<Request xmlns=\"urn:oasis:names:tc:xacml:3.0:core:schema:wd-17\"\n" +
+                "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "  xsi:schemaLocation=\"urn:oasis:names:tc:xacml:3.0:core:schema:wd-17 http://docs.oasis-open.org/xacml/3.0/xacml-core-v3-schema-wd-17.xsd\"\n" +
+                "  ReturnPolicyIdList=\"true\" CombinedDecision=\"true\">\n" +
+                " \n" +
+                "  <Attributes Category=\"urn:oasis:names:tc:xacml:1.0:subject-category:access-subject\">\n" +
+                "    <Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:subject:subject-id\" IncludeInResult=\"false\">\n" +
+                "      <AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">"+ userName +"</AttributeValue>\n" +
+                "    </Attribute>\n" +
+                "  </Attributes>\n" +
+                "  \n" +
+                "  <Attributes Category=\"urn:oasis:names:tc:xacml:3.0:role\">\n" +
+                "    <Attribute AttributeId=\"role\" IncludeInResult=\"true\">\n" +
+                "      <AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">" + role + "</AttributeValue>\n" +
+                "    </Attribute>\n" +
+                "  </Attributes>\n" +
+                "  \n" +
+                "  <Attributes Category=\"urn:oasis:names:tc:xacml:3.0:count\">\n" +
+                "    <Attribute AttributeId=\"countView\" IncludeInResult=\"true\">\n" +
+                "      <AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#integer\">1</AttributeValue>\n" +
+                "    </Attribute>\n" +
+                "  </Attributes>\n" +
+                "  \n" +
+                "  <Attributes Category=\"urn:oasis:names:tc:xacml:3.0:attribute-category:resource\">\n" +
+                "    <Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:resource:resource-id\"\n" +
+                "      IncludeInResult=\"false\">\n" +
+                "      <AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">" + resource +
+                "</AttributeValue>\n" +
+                "    </Attribute>\n" +
+                "  </Attributes>\n" +
+                "  \n" +
+                "  <Attributes Category=\"urn:oasis:names:tc:xacml:3.0:attribute-category:action\">\n" +
+                "    <Attribute AttributeId=\"urn:oasis:names:tc:xacml:1.0:action:action-id\" IncludeInResult=\"false\">\n" +
+                "      <AttributeValue DataType=\"http://www.w3.org/2001/XMLSchema#string\">" + actionName + "</AttributeValue>\n" +
+                "    </Attribute>\n" +
+                "  </Attributes>\n" +
+                "</Request>\n";
+    }
 }

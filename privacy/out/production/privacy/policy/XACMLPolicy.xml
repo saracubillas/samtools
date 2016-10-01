@@ -27,7 +27,7 @@
 					
 					<!-- Which resource -->
 					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
-						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">examples/toy.sam</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">toy.sam</AttributeValue>
 						<AttributeDesignator MustBePresent="false"
 							Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
 							AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
@@ -78,7 +78,7 @@
 
 					<!-- Which resource -->
 					<Match MatchId="urn:oasis:names:tc:xacml:1.0:function:regexp-string-match">
-						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">examples/toy.sam#ref2</AttributeValue>
+						<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">toy.sam#ref2</AttributeValue>
 						<AttributeDesignator MustBePresent="false"
 											 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
 											 AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
