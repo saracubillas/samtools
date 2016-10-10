@@ -14,21 +14,18 @@ public class ViewChromosome extends Command {
 
         viewSAM(fileWithoutRef);
         Command Index = new Index();
-        System.out.println(fileWithoutExtn + ".bam");
         Index.execute(fileWithoutExtn + ".bam");
 /*
         String command = "samtools view -h " + fileWithoutExtn + ".bam " + chromosomeRef + " > " +
                 fileWithoutExtn + "." + chromosomeRef + ".sam "; */
 
         String command = "samtools view -h " + fileWithoutExtn + ".bam " + chromosomeRef;
-        System.out.println(command);
         String output = executeCommand(command);
         System.out.println(output);
         System.out.println("\n========OUTPUT======");
     }
 
     private void viewSAM(String file) {
-        System.out.println(file);
         Command ViewSAM = new ViewSAM();
         ViewSAM.execute(file);
     }
