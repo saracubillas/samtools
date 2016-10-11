@@ -17,6 +17,12 @@ public class Balana {
     private static org.wso2.balana.Balana balana;
 
 
+    public static void setResourceName(String resourceName) {
+        Balana.resourceName = resourceName;
+    }
+
+    private static String resourceName;
+
     public static String evaluateRequest(String request) {
         initBalana();
         try {
@@ -39,6 +45,12 @@ public class Balana {
         // using file based policy repository. so set the policy location as system property
         String policyLocation = null;
         String configPath = null;
+        try {
+           // policyLocation = getPolicyFromGniff(resourceName);
+
+        } catch (IOException e) {
+
+        }
         try {
             policyLocation = (new File(".")).getCanonicalPath() + File.separator + "policy";
             System.setProperty(FileBasedPolicyFinderModule.POLICY_DIR_PROPERTY, policyLocation);
