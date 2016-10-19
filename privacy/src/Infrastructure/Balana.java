@@ -17,8 +17,12 @@ public class Balana {
     private static org.wso2.balana.Balana balana;
 
 
-    public static String evaluateRequest(String request) {
-        initBalana();
+    public static String evaluateRequest(String request){
+        return evaluateRequest(request, null);
+    }
+
+    public static String evaluateRequest(String request, String policyFileName) {
+        initBalana(policyFileName);
         try {
             PDP pdp = getPDPNewInstance();
             String response = pdp.evaluate(request);
@@ -35,12 +39,21 @@ public class Balana {
         return "";
     }
 
-    private static void initBalana() {
+    private static void initBalana(){
+        initBalana(null);
+    }
+
+    private static void initBalana(String policyFilename) {
         // using file based policy repository. so set the policy location as system property
         String policyLocation = null;
         String configPath = null;
         try {
-            policyLocation = (new File(".")).getCanonicalPath() + File.separator + "policy";
+            if (policyFilename==null) {
+                policyLocation = (new File(".")).getCanonicalPath() + File.separator + "policy/XACMLPolicy.xml";
+            }else{
+                policyLocation = policyFilename;
+            }
+            System.out.println("policyLocation: "+policyLocation);
             System.setProperty(FileBasedPolicyFinderModule.POLICY_DIR_PROPERTY, policyLocation);
         } catch (IOException e) {
             System.err.println("Can not locate policy repository");

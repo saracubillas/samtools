@@ -6,8 +6,13 @@ import application.service.CommandFactory;
 import application.service.XACMLparser;
 
 import java.io.Console;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
+import static java.lang.System.exit;
 
 
 public class GenomeAccessControl {
@@ -33,6 +38,7 @@ public class GenomeAccessControl {
         initData();
 
 
+        String request=null;
         if ((console = System.console()) != null){
             userName = console.readLine("Enter User name : ");
             if(userName == null || userName.trim().length() < 1 ){
@@ -76,26 +82,84 @@ public class GenomeAccessControl {
                     return;
                 }
             }
+
+            resource = filePath;
+            if (chromosomeRef != null) {
+                resource = resource + "#" + chromosomeRef;
+            }
+
+            if (resource != null) {
+                fileName = resource.substring(resource.lastIndexOf('/')+1, resource.length());
+            }
+            request = createXACMLRequest(userName, role, actionName, fileName);
+        }else{
+            /*if (args.length!=1){
+                System.err.println("Filepath and only filepath needed as program arguments");
+                exit(-1);
+            }
+            try {
+                request = FileUtils.readFileToString(new File(args[0]));
+
+            }catch (java.io.IOException e){
+                System.err.println("error while attempting to read request file");
+                exit(-1);
+            }*/
+            actionName ="VIEW";
+            resource="./Id05.geniff";
+            fileName = resource;
+            userName="John Doe";
+            role="physician";
+            request = createXACMLRequest(userName, role, actionName, fileName);
+
+            /*actionName ="VIEWCHROMOSOME";
+            resource="./Id05.geniff#2";
+            fileName = resource;
+            userName="JaneDoe";
+            role="researcher";*/
+            request = createXACMLRequest(userName, role, actionName, fileName);
+
+        }
+
+        String XACML_policy_filename = null; //null is for default
+        String filename_without_ref;
+        if (fileName.contains("#")) {
+            filename_without_ref = fileName.substring(0, fileName.lastIndexOf('#'));
+        }else{
+            filename_without_ref = fileName;
+        }
+        if(FilenameUtils.getExtension(filename_without_ref).equalsIgnoreCase("geniff")){
+            executeAction(fileName,"EXTRACT_XACML");
+            String filename_dir = FilenameUtils.getPath(fileName);
+            if (filename_dir.isEmpty()) filename_dir=".";
+            File directory= new File(filename_dir);
+            if (directory.isDirectory()){
+                boolean xacml_found = false;
+                for(File file:directory.listFiles()){
+                    if(FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("xacml")){
+                        if (xacml_found){
+                            System.err.println("too many XACML in the directory");
+                            exit(-1);
+                        }else{
+                            XACML_policy_filename = file.getAbsolutePath();
+                            xacml_found = true;
+                        }
+                    }
+                }
+            }else{
+                System.err.println("Error in the geniff file location provided: file location is \""+filename_dir+"\"");
+                exit(-1);
+            }
         }
 
 
-        resource = filePath;
 
-        if (chromosomeRef != null) {
-            resource = resource + "#" + chromosomeRef;
-        }
 
-        if (resource != null) {
-            fileName = resource.substring(resource.lastIndexOf('/')+1, resource.length());
-        }
-        String request = createXACMLRequest(userName, role, actionName, fileName);
-        //String request = createXACMLRequest("JohnDoe", "physician", "VIEW", 40);
 
         System.out.println("\n======================== XACML Request ====================");
         System.out.println(request);
         System.out.println("===========================================================");
 
-        String decision = evaluateRequest(request);
+        String decision = evaluateRequest(request, XACML_policy_filename);
 
         if (decision.equals("Permit")){
             System.out.println("\n" + userName + " is authorized to perform this action\n\n");
@@ -106,10 +170,14 @@ public class GenomeAccessControl {
 
     }
 
-    private static String evaluateRequest(String request) {
+    private static String evaluateRequest(String request, String XACML_policy){
         Balana balana = new Balana();
-        String response = balana.evaluateRequest(request);
+        String response = balana.evaluateRequest(request,XACML_policy);
         return XACMLparser.getDecision(response);
+    }
+
+    private static String evaluateRequest(String request) {
+        return evaluateRequest(request,null);
     }
 
 
