@@ -16,6 +16,11 @@ public class Balana {
 
     private static org.wso2.balana.Balana balana;
 
+    private static String resourceName;
+    public static void setResourceName(String resourceName) {
+        Balana.resourceName = resourceName;
+    }
+
 
     public static String evaluateRequest(String request){
         return evaluateRequest(request, null);

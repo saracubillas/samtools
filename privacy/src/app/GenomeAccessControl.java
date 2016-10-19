@@ -163,6 +163,7 @@ public class GenomeAccessControl {
 
         if (decision.equals("Permit")){
             System.out.println("\n" + userName + " is authorized to perform this action\n\n");
+            //resource = decode(resource);
             executeAction(resource, actionName);
         } else {
             System.out.println("\n" + userName + " is NOT authorized to perform this action\n");
