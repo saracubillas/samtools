@@ -1,0 +1,9 @@
+<Response xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"><Result><Decision>Permit</Decision><Status><StatusCode Value="urn:oasis:names:tc:xacml:1.0:status:ok"/></Status><Obligations><Obligation ObligationId="urn:oasis:names:tc:xacml:example:obligation:email"><AttributeAssignment  AttributeId="urn:oasis:names:tc:xacml:3.0:example:attribute:text" DataType="http://www.w3.org/2001/XMLSchema#string">
+Your genomic information has been accessed by:</AttributeAssignment>
+<AttributeAssignment  AttributeId="urn:oasis:names:tc:xacml:3.0:example:attribute:text" DataType="http://www.w3.org/2001/XMLSchema#string">
+sara</AttributeAssignment>
+</Obligation></Obligations><PolicyIdentifierList><PolicyIdReference>urn:isdcm:policyid:2</PolicyIdReference></PolicyIdentifierList><Attributes Category="urn:oasis:names:tc:xacml:3.0:role"><Attribute AttributeId="role" IncludeInResult="true">
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">researcher</AttributeValue></Attribute>
+</Attributes><Attributes Category="urn:oasis:names:tc:xacml:3.0:count"><Attribute AttributeId="countView" IncludeInResult="true">
+<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#integer">1</AttributeValue></Attribute>
+</Attributes></Result></Response>
